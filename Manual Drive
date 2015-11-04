@@ -53,9 +53,9 @@ public class Manual_Drive extends OpMode {
             leftPower = ((float) Math.pow(leftY,2))*-1;
         }
         if(rightY >=0) {
-            float rightPower = (float) Math.pow(rightY, 2);
+            rightPower = (float) Math.pow(rightY, 2);
         } else {
-            float rightPower = ((float) Math.pow(rightY, 2));
+            rightPower = ((float) Math.pow(rightY, 2))*-1;
         }
 
         leftMotor.setPower(leftPower);
