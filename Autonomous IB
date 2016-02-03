@@ -1,0 +1,258 @@
+package com.qualcomm.ftcrobotcontroller.opmodes;
+
+//importing stuff
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Servo;
+
+/**
+ * Created by MSRobotics on 1/4/2016.
+ */
+
+
+
+
+public class AutonomousIB extends LinearOpMode {
+
+    //diameter of wheel
+    float wheelDiameter = 4;
+
+    //gear ratio
+    float gearRatio = 2;
+
+    //time (in milliseconds) the robot takes to make its first turn
+    int turn1Millis = 478;
+
+    //time (in milliseconds) the robot takes to make its second turn
+    int turn2Millis = (478/90)*145;
+
+    //first distance (in inches) robot travels
+    float distance1 = 72;
+    //encoder counts necessary for the above distance
+    double count1 = 16509.55;
+
+    //second distance (in inches) robot travels
+    float distance2 = 45;
+    //encoder counts necessary for the above distance
+    double count2 = 10318.47;
+
+    //fourth distance (in inches) robot travels
+    float mountainDistance = 64;
+    //encoder counts necessary for the above distance
+    double mountainCount = 14675.16;
+
+    //tread motors
+    DcMotor leftMotor1;
+    DcMotor leftMotor2;
+    DcMotor rightMotor1;
+    DcMotor rightMotor2;
+
+    //lift motor
+    DcMotor liftMotor;
+
+    //front arm
+    Servo frontArm;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        frontArm = hardwareMap.servo.get("front_arm");
+        leftMotor1 = hardwareMap.dcMotor.get("left_motor_1");
+        leftMotor2 = hardwareMap.dcMotor.get("left_motor_2");
+        rightMotor1 = hardwareMap.dcMotor.get("right_motor_1");
+        rightMotor2 = hardwareMap.dcMotor.get("right_motor_2");
+        liftMotor = hardwareMap.dcMotor.get("lift_motor");
+
+        //reverse motors
+        rightMotor1.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor2.setDirection(DcMotor.Direction.REVERSE);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        //wait for driver to press play
+        waitForStart();
+
+        //the following loop will break when it gets to the break statement or when the driver presses the stop button
+        while(opModeIsActive()) {
+            //first distance the robot travels
+            //reset tread distance encoders
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //setting the desired number of counts the motor will travel, setting a target
+            //leftMotor1.setTargetPosition((int) count1);
+            leftMotor2.setTargetPosition((int) count1);
+            rightMotor2.setTargetPosition((int) count1);
+            //rightMotor2.setTargetPosition((int) count1);
+            //the motors will go to the target position (above)
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //the motors will move at this speed
+            leftMotor2.setPower(1);
+            rightMotor2.setPower(1);
+
+            while(leftMotor2.isBusy() && rightMotor2.isBusy()){
+                leftMotor1.setPower(1);
+                rightMotor1.setPower(1);
+            }
+            leftMotor2.setPower(0);
+            rightMotor2.setPower(0);
+            leftMotor1.setPower(0);
+            rightMotor1.setPower(0);
+
+            //the robot makes turn 90 degrees clockwise
+            leftMotor1.setPower(1);
+            leftMotor2.setPower(1);
+            rightMotor1.setPower(-1);
+            rightMotor2.setPower(-1);
+            //wait for robot to make turn
+            sleep(turn1Millis);
+            leftMotor1.setPower(0);
+            leftMotor2.setPower(0);
+            rightMotor1.setPower(0);
+            rightMotor2.setPower(0);
+
+            //second distance the robot travels
+            //reset tread distance encoders
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //setting the desired number of counts the motor will travel, setting a target
+            //leftMotor1.setTargetPosition((int) count2);
+            leftMotor2.setTargetPosition((int) count2);
+            rightMotor2.setTargetPosition((int) count2);
+            //rightMotor2.setTargetPosition((int) count2);
+            //the motors will go to the target position (above)
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //the motors will move at this speed
+
+            leftMotor2.setPower(1);
+            rightMotor2.setPower(1);
+
+            while(leftMotor2.isBusy() && rightMotor2.isBusy()){
+                leftMotor1.setPower(1);
+                rightMotor1.setPower(1);
+            }
+            leftMotor2.setPower(0);
+            rightMotor2.setPower(0);
+            leftMotor1.setPower(0);
+            rightMotor1.setPower(0);
+
+            //move lift up
+            liftMotor.setPower(1);
+            sleep(3300);
+            liftMotor.setPower(0);
+
+            //the robot moves front arm to deposit pre-loaded climbers
+            frontArm.setPosition(0.28);
+            sleep(1000);
+            frontArm.setPosition(0);
+            sleep(1500);
+
+            //move lift down
+            liftMotor.setPower(-1);
+            sleep(3300);
+            liftMotor.setPower(0);
+
+            //the robot makes turn 180 degrees clockwise
+            leftMotor1.setPower(1);
+            leftMotor2.setPower(1);
+            rightMotor1.setPower(-1);
+            rightMotor2.setPower(-1);
+            //wait for robot to make turn
+            sleep(turn1Millis*2);
+            leftMotor1.setPower(0);
+            leftMotor2.setPower(0);
+            rightMotor1.setPower(0);
+            rightMotor2.setPower(0);
+
+            //third distance the robot travels
+            //reset tread distance encoders
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //setting the desired number of counts the motor will travel, setting a target
+            //leftMotor1.setTargetPosition((int) count2);
+            leftMotor2.setTargetPosition((int) count2);
+            rightMotor2.setTargetPosition((int) count2);
+            //rightMotor2.setTargetPosition((int) count2);
+            //the motors will go to the target position (above)
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //the motors will move at this speed
+
+            leftMotor2.setPower(1);
+            rightMotor2.setPower(1);
+
+            while(leftMotor2.isBusy() && rightMotor2.isBusy()){
+                leftMotor1.setPower(1);
+                rightMotor1.setPower(1);
+            }
+            leftMotor2.setPower(0);
+            rightMotor2.setPower(0);
+            leftMotor1.setPower(0);
+            rightMotor1.setPower(0);
+
+
+            //the robot makes 135(?) degrees turn anticlockwise
+            leftMotor1.setPower(-1);
+            leftMotor2.setPower(-1);
+            rightMotor1.setPower(1);
+            rightMotor2.setPower(1);
+            //wait for robot to make turn
+            sleep(turn2Millis);
+            leftMotor1.setPower(0);
+            leftMotor2.setPower(0);
+            rightMotor1.setPower(0);
+            rightMotor2.setPower(0);
+
+            //final distance robot travels
+            //reset tread distance encoders
+           // leftMotor1.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            //setting the desired number of counts the motor will travel, setting a target
+            //leftMotor1.setTargetPosition((int) mountainCount);
+            leftMotor2.setTargetPosition((int) mountainCount);
+            rightMotor2.setTargetPosition((int) mountainCount);
+            //rightMotor2.setTargetPosition((int) mountainCount);
+            //the motors will go to the target position (above)
+            //leftMotor1.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            leftMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //rightMotor2.setChannelMode(DcMotorController.RunMode.RUN_TO_POSITION);
+            //the motors will move at this speed
+
+            leftMotor2.setPower(1);
+            rightMotor2.setPower(1);
+
+            while(leftMotor2.isBusy() && rightMotor2.isBusy()){
+                leftMotor1.setPower(1);
+                rightMotor1.setPower(1);
+            }
+            leftMotor2.setPower(0);
+            rightMotor2.setPower(0);
+            leftMotor1.setPower(0);
+            rightMotor1.setPower(0);
+
+            break;
+        }
+
+        //turn off tread motors
+        leftMotor1.setPower(0);
+        leftMotor2.setPower(0);
+        rightMotor1.setPower(0);
+        rightMotor2.setPower(0);
+    }
+
+}
